@@ -3,6 +3,7 @@ const app = express();
 app.use(express.json());
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/user');
+const sauceRoutes = require('./routes/sauce');
 
 mongoose.connect('mongodb+srv://maxence:Azerty444@cluster0.nmhpjpe.mongodb.net/?retryWrites=true&w=majority',
     {
@@ -20,7 +21,8 @@ app.use((req, res, next) => {
 });
 
 
-app.use('/api/auth/signup', userRoutes);
+app.use('/api/auth/', userRoutes);
+app.use('/api/sauces', sauceRoutes);
 
 
 
