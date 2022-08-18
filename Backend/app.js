@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 const mongoose = require('mongoose');
-const Thing = require('./models/thing');
+const userRoutes = require('./routes/user');
 
 mongoose.connect('mongodb+srv://maxence:Azerty444@cluster0.nmhpjpe.mongodb.net/?retryWrites=true&w=majority',
     {
@@ -19,22 +19,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.post('/api/auth/signup', (req, res, next) => {
-    //delete req.body._id;
-    console.log(req.body)
-    const thing = new Thing({
-        ...req.body
-    });
-    thing.save()
-        .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
-        .catch(error => res.status(400).json({ error }));
-});
 
-/*app.post('/api/auth/signup', (req, res, next) => {
-    console.log(req.body);
-    res.status(201).json({
-      message: 'Objet créé !'
-    });
-  });*/
+app.use('/api/auth/signup', userRoutes);
+
+
 
 module.exports = app;
