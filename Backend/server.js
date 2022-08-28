@@ -1,6 +1,7 @@
-const http = require('http');
-const app = require('./app');
+const http = require('http'); //Importe le package http de node 
+const app = require('./app'); //Importe le fichier 'app.js'
 
+/*permet de renvoyer un port valide*/
 const normalizePort = val => {
   const port = parseInt(val, 10);
 
@@ -12,6 +13,8 @@ const normalizePort = val => {
   }
   return false;
 };
+
+/*Recherche différentes erreurs*/
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
@@ -35,9 +38,9 @@ const errorHandler = error => {
   }
 };
 
-const server = http.createServer(app);
+const server = http.createServer(app); //On utilise la méthode creatserver du package http pour demarré le serveur node
 
-
+/*Permet d'afficher le port sur lequel le serveur est connecté*/
 server.on('error', errorHandler);
 server.on('listening', () => {
   const address = server.address();
@@ -45,4 +48,4 @@ server.on('listening', () => {
   console.log('Listening on ' + bind);
 });
 
-server.listen(port);
+server.listen(port); //Le serveur utilise le port 3000 
