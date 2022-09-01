@@ -1,15 +1,14 @@
 const express = require('express'); //On importe le package express
 const app = express();
-app.use(express.json()); //Convertit les requètes Post en objet utilisable
+const helmet = require("helmet");
+require('dotenv').config()
 
-
-app.disable('x-powered-by');
 
 const rateLimit = require("express-rate-limit")
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	max: 300, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
@@ -25,7 +24,7 @@ const path = require('path');
 
 /*Connection à notre BDD mongoDB */
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://maxence:Azerty444@cluster0.nmhpjpe.mongodb.net/?retryWrites=true&w=majority',
+mongoose.connect(`mongodb+srv://${process.env.DB_MONGODB}?retryWrites=true&w=majority`,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -33,7 +32,7 @@ mongoose.connect('mongodb+srv://maxence:Azerty444@cluster0.nmhpjpe.mongodb.net/?
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-
+    
 /*Gère les erreurs de CORS*/
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -42,11 +41,14 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(express.json()); //Convertit les requètes Post en objet utilisable
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
+app.use(helmet());
 
 app.use('/api/auth/', userRoutes);
-app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces', sauceRoutes);
+
 
 
 module.exports = app;
